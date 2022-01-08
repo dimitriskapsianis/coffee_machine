@@ -1,0 +1,105 @@
+MENU = {
+    "espresso": {
+        "ingredients": {
+            "water": 50,
+            "coffee": 18,
+            "milk": 0,
+        },
+        "cost": 1.5,
+    },
+    "latte": {
+        "ingredients": {
+            "water": 200,
+            "milk": 150,
+            "coffee": 24,
+        },
+        "cost": 2.5,
+    },
+    "cappuccino": {
+        "ingredients": {
+            "water": 250,
+            "milk": 100,
+            "coffee": 24,
+        },
+        "cost": 3.0,
+    }
+}
+
+
+
+# define initial resources
+
+milk = 2000
+coffee = 1000
+money = 0
+water = 3000
+
+end_machine = False
+machine_off = False
+
+
+
+def run_machine(end_machine, milk,coffee,money,water):
+    while end_machine == False:
+
+
+        # provide report for ingredients
+
+        if coffee_type == "report":
+            print(f"Milk {milk}g")
+            print(f"water {water}g")
+            print(f"coffee {coffee}g")
+            print(f"money ${money}")
+            end_machine = True
+
+        # check for materials
+
+        if coffee_type != "report":
+            if MENU[coffee_type]["ingredients"]["milk"] >= milk:
+                print("not enough milk")
+                end_machine = True
+
+            if MENU[coffee_type]["ingredients"]["coffee"] >= coffee:
+                print("not enough coffee")
+                end_machine = True
+
+            if MENU[coffee_type]["ingredients"]["water"] >= water:
+                print("not enough water")
+                end_machine = True
+
+        if coffee_type != "report" and MENU[coffee_type]["ingredients"]["water"] <= water and \
+                MENU[coffee_type]["ingredients"]["milk"] <= milk and MENU[coffee_type]["ingredients"]["coffee"] <= coffee:
+
+            print("Please insert coins")
+            quarters = float(input("How many quarters: "))
+            dimes = float(input("How many dimes: "))
+            nickles = float(input("How many nickles: "))
+            pennies = float(input("How many pennies: "))
+
+            total_paid  = (round(quarters*0.25+dimes*0.10+nickles*0.05+pennies*0.01, 2))
+            print(f"The total amount you inserted is ${total_paid}")
+            end_machine =True
+
+            if MENU[coffee_type]["cost"] <= total_paid:
+                change = round(total_paid - MENU[coffee_type]["cost"],2)
+                money += total_paid
+                print(f"Transaction was successful. Your change is ${change}")
+                print(f"Here is you {coffee_type}! Enjoy")
+                water -= MENU[coffee_type]["ingredients"]["water"]
+                coffee -= MENU[coffee_type]["ingredients"]["coffee"]
+                milk -= MENU[coffee_type]["ingredients"]["milk"]
+
+            else:
+                print(f"Sorry this is not enough money. Money refunded")
+
+    return (milk,coffee,money,water)
+
+while machine_off == False:
+    # ask customer what type of coffee they would like
+
+    coffee_type = input("What would you like? (espresso/latte/cappuccino): ")
+
+    if coffee_type =="off":
+        machine_off = True
+    else:
+        milk,coffee,money,water =run_machine(end_machine, milk,coffee,money,water)
